@@ -51,14 +51,11 @@ public class CustomResponseAdvice implements ResponseBodyAdvice<List> {
 
                 pdfGen.generate(infoPDF);
 
-                serverHttpResponse.getBody().flush();
+                return null;
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-
-
         }
 
         System.out.println("    >> report = " + report);

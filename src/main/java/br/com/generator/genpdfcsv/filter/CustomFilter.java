@@ -7,6 +7,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Component
 public class CustomFilter extends OncePerRequestFilter {
@@ -16,14 +18,4 @@ public class CustomFilter extends OncePerRequestFilter {
         filterChain.doFilter(new CustomRequestWrapper(request), response);
     }
 
-//    @Override
-//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-//        filterChain.doFilter(new CustomRequestWrapper((HttpServletRequest)servletRequest), servletResponse);
-//    }
-//
-//    @Override
-//    public void init(FilterConfig filterConfig) throws ServletException {}
-//
-//    @Override
-//    public void destroy() { }
 }
