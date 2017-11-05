@@ -29,8 +29,8 @@ public class ReportResource {
 
         try {
 
-//            response.setContentType("application/pdf");
-//            response.setHeader("Content-Disposition", "attachment; filename=\"pdf-file.pdf\"");
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=\"pdf-file.pdf\"");
 
             ReportGenerator pdfGen = new ReportGeneratorPDF();
 

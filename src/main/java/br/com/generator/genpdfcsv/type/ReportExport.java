@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ReportExport {
     String value();
+    ReportFormatType format() default ReportFormatType.DEFAULT;
+    ReportFieldAlign align() default ReportFieldAlign.LEFT;
 }

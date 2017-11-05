@@ -1,8 +1,12 @@
 package br.com.generator.genpdfcsv.report.impl;
 
+import br.com.generator.genpdfcsv.dao.NotaFiscalDAO;
+import br.com.generator.genpdfcsv.domain.NotaFiscal;
 import br.com.generator.genpdfcsv.domain.RelatorioDTO;
 import br.com.generator.genpdfcsv.domain.ReportInfo;
 import br.com.generator.genpdfcsv.report.ReportGeneratorAbstract;
+import br.com.generator.genpdfcsv.type.RelatorioItemDTO;
+import br.com.generator.genpdfcsv.type.ReportExport;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.tool.xml.Pipeline;
@@ -24,7 +28,9 @@ import freemarker.template.Configuration;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +40,47 @@ public class ReportGeneratorPDF extends ReportGeneratorAbstract {
     private Document document;
     private PdfWriter writer;
 
+    private List<Map<String, RelatorioItemDTO>> getFormattedList(List<?> list, String[] attributes) {
+
+        Map<String, RelatorioItemDTO> map = null;
+        List<Map<String, RelatorioItemDTO>> result = new ArrayList<>();
+
+        for (Object item: list) {
+
+            map = new HashMap<>();
+
+            for (Field field: item.getClass().getDeclaredFields()) {
+
+                field.setAccessible(true);
+
+                ReportExport reportExport = field.getDeclaredAnnotation(ReportExport.class);
+
+                if (reportExport != null) {
+
+                    try {
+
+                        Object value = field.get(item);
+
+                        RelatorioItemDTO itemDTO = new RelatorioItemDTO(reportExport.format().format(value), reportExport.align().getValue());
+
+                        map.put(field.getName(), itemDTO);
+
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                        map.put(field.getName(), RelatorioItemDTO.newBlankInstance());
+                    }
+
+                }
+
+            }
+
+            result.add(map);
+
+        }
+
+        return result;
+    }
+
     @Override
     protected void createFile(ReportInfo info) throws Exception {
         String html = parseHtml(info.getList(), info.getClazz());
@@ -42,7 +89,7 @@ public class ReportGeneratorPDF extends ReportGeneratorAbstract {
 
     private String parseHtml(List<?> list, Class<?> clazz) throws Exception {
 
-        String templateName = "D:\\docs\\templates\\report.html";
+        String templateName = "/home/bruno/dev/repositories/report-pdf-csv-spring/src/main/resources/report-matriz.html";
 
         String docHtml = FileUtils.readFileToString(new File(templateName), StandardCharsets.UTF_8);
 
@@ -61,6 +108,7 @@ public class ReportGeneratorPDF extends ReportGeneratorAbstract {
             String[] footers = null;
 
             RelatorioDTO dto = new RelatorioDTO(title, columnHeaders, attributes, list, footers);
+            dto.setAui(getFormattedList(list, attributes));
 
             Map<String, Object> data = new HashMap<>();
             data.put("data", dto);

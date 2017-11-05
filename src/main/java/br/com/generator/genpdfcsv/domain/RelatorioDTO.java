@@ -1,6 +1,9 @@
 package br.com.generator.genpdfcsv.domain;
 
+import br.com.generator.genpdfcsv.type.RelatorioItemDTO;
+
 import java.util.List;
+import java.util.Map;
 
 public class RelatorioDTO {
 
@@ -9,6 +12,8 @@ public class RelatorioDTO {
     private String[] attributes;
     private List<?> records;
     private String[] footers;
+
+    private List<Map<String, RelatorioItemDTO>> aui;
 
     public RelatorioDTO(String title, String[] headers, String[] attributes, List<?> records, String[] footers) {
         this.title = title;
@@ -36,5 +41,13 @@ public class RelatorioDTO {
 
     public List<?> getRecords() {
         return records;
+    }
+
+    public List<Map<String, RelatorioItemDTO>> getAui() {
+        return aui;
+    }
+
+    public void setAui(List<Map<String, RelatorioItemDTO>> aui) {
+        this.aui = aui;
     }
 }

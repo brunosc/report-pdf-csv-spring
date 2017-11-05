@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="Content-Style-Type" content="text/css"/>
+	<style type="text/css">
+		.title {text-align: center}
+		.tr1 {background-color: rgb(224,224,224)}
+	</style>
+	<title></title>
+</head>
+
+<body>
+	<#function formatValue value>
+		<#if value?is_number>
+			<#setting locale="pt_BR">
+			<#return value?string("###,##0.00")/>
+		<#elseif value?is_datetime>
+			<#return value?string("dd/MM/yyyy")/>
+		<#else>
+			<#return value/>
+		</#if>	
+	</#function>
+	
+	<h1 class="title">${data.title}</h1>
+
+	<table width="100%">
+		<thead>
+			<tr>
+				<#list data.headers as header>
+					<th>${header}</th>
+				</#list>				
+			</tr>
+		</thead>
+		
+		<tbody>		
+			<#list data.records as record>
+			<#if (record?counter%2) != 0>
+				<tr>
+					<#list data.attributes as attr>
+						<#if record[attr]??>						
+							<th>${formatValue(record[attr])}</th>							
+						<#else>
+							<th></th>
+						</#if>
+					</#list>
+				</tr>
+			<#else>
+				<tr class="tr1">
+					<#list data.attributes as attr>
+						<#if record[attr]??>						
+							<th>${formatValue(record[attr])}</th>							
+						<#else>
+							<th></th>
+						</#if>
+					</#list>
+				</tr>
+			</#if>
+			</#list>
+		</tbody>
+		
+		<#if data.footers?? && data.footers?size gt 0>
+			<tfoot>
+				<tr>
+					<#list data.footers as footer>
+						<th>${formatValue(footer)}</th>
+					</#list>
+				</tr>
+			</tfoot>
+		</#if>
+	</table>
+
+</body>
+
+</html> 
