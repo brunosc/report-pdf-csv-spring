@@ -9,10 +9,7 @@ import br.com.generator.genpdfcsv.report.impl.ReportGeneratorPDF;
 import com.itextpdf.text.pdf.PdfPage;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -25,7 +22,7 @@ import java.util.Map;
 public class ReportResource {
 
     @RequestMapping(value = "/pdf", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public void pdf(HttpServletResponse response) {
+    public ResponseEntity<?> pdf(HttpServletResponse response) {
 
         try {
 
@@ -44,6 +41,7 @@ public class ReportResource {
             e.printStackTrace();
         }
 
+        return ResponseEntity.ok(null);
     }
 
     @RequestMapping(value = "/csv", method = RequestMethod.GET, produces = "text/csv")
@@ -77,7 +75,7 @@ public class ReportResource {
     }
 
     @RequestMapping(value = "/int", method = RequestMethod.GET)
-    public ResponseEntity<List<NotaFiscal>> intercept() {
+    public ResponseEntity<List<NotaFiscal>> intercept(@RequestParam("report") String report) {
 
         List<NotaFiscal> list = NotaFiscalDAO.findAll();
 
